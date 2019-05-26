@@ -8,21 +8,10 @@ import java.util.ArrayList;
 
 public class ResultsQueries {
 
-    private static Connection connect() {
-        String url = Database.PATH + Database.DB_NAME;
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return conn;
-    }
-
     public static void insert(String name, int result, int time) {
         String sql = "INSERT INTO results(player_name, result, time_taken, quiz_date) VALUES(?,?,?,?)";
 
-        try (Connection conn = connect();
+        try (Connection conn = DBCreator.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
             pstmt.setInt(2, result);
@@ -40,7 +29,7 @@ public class ResultsQueries {
 
         String sql = "SELECT id, player_name, result, time_taken, quiz_date FROM results";
 
-        try (Connection conn = connect();
+        try (Connection conn = DBCreator.connect();
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
 
@@ -69,7 +58,7 @@ public class ResultsQueries {
                 "ORDER BY result DESC, time_taken ASC " +
                 "LIMIT 10";
 
-        try (Connection conn = connect();
+        try (Connection conn = DBCreator.connect();
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
 
@@ -96,7 +85,7 @@ public class ResultsQueries {
         String sql = "SELECT id, player_name, result, time_taken, quiz_date "
                 + "FROM results WHERE result >= ?";
 
-        try (Connection conn = connect();
+        try (Connection conn = DBCreator.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
 
             pstmt.setDouble(1, resultLimit);
